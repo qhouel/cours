@@ -16,11 +16,6 @@ class Controleur
 	{
 		return $this->unModele->getTable();
 	}
-
-	public function select ($table, $whereColumn, $whereValue) {
-		return $this->unModele->select($table, $whereColumn, $whereValue);
-	}
-
 	public function setTable($uneTable)
 	{
 		$this->unModele->setTable($uneTable);

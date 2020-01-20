@@ -9,7 +9,7 @@ class Modele
 		$this->pdo = null;
 		try
 			{
-				$this->pdo = new PDO ("mysql:host=".$serveur.";port=3306,dbname=".$bdd,$user,$mdp);
+				$this->pdo = new PDO ("mysql:host=".$serveur.";dbname=".$bdd,$user,$mdp);
 			}
 			catch (PDOException $exp)
 			{
@@ -21,22 +21,6 @@ class Modele
 	public function getTable()
 	{
 		return $this->table;
-	}
-
-	public function select ($table, $whereColumn, $whereValue)
-	{
-		if ($this->pdo != NULL)
-		{
-			$data = array(":whereValue" => $whereValue);
-			$request = "SELECT * FROM $table WHERE $whereColumn = :whereValue;";
-			$select = $this->pdo->prepare($request);
-			$select->execute($data);
-			return $select->fetch();
-		}
-		else
-		{
-			return NULL;
-		}
 	}
 
 	public function setTable($uneTable)
