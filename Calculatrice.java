@@ -29,46 +29,46 @@ public class Calculatrice extends JFrame implements ActionListener {
     /* float ***********************************************************************************************************
      */
 
-    private float fl0 = 0.0f;
+    private float fl0 = (float) 0.0;
 
     /* Font ************************************************************************************************************
      */
 
-    private Font f0 = new Font("Segoe MDL2 Assets", Font.PLAIN, 10);
-    private Font f1 = new Font("Segoe UI Semibold", Font.PLAIN, 40);
-    private Font f2 = new Font("Segoe MDL2 Assets", Font.PLAIN, 14);
-    private Font f3 = new Font("Segoe UI Symbol", Font.PLAIN, 14);
-    private Font f4 = new Font("Segoe UI Semibold", Font.BOLD, 18);
-    private Font f5 = new Font("Segoe UI Symbol", Font.PLAIN, 19);
+    private Font f0 = new Font("Arial", Font.PLAIN, 10);
+    private Font f1 = new Font("Arial", Font.PLAIN, 40);
+    private Font f2 = new Font("Arial", Font.PLAIN, 14);
+    private Font f3 = new Font("Arial", Font.PLAIN, 14);
+    private Font f4 = new Font("Arial", Font.BOLD, 18);
+    private Font f5 = new Font("Arial", Font.PLAIN, 19);
 
     /* JButton *********************************************************************************************************
      */
 
-    private JButton close = new JButton("\uE106");
-    private JButton percent = new JButton("\uE94C");
+    private JButton close = new JButton("X");
+    private JButton percent = new JButton("%");
     private JButton clearEntry = new JButton("CE");
     private JButton clear = new JButton("C");
-    private JButton backspace = new JButton("\uE94F");
-    private JButton inverse = new JButton("\u00B9\u2044\uD835\uDC65");
-    private JButton square = new JButton("\uD835\uDC65²");
-    private JButton squareRoot = new JButton("^�\u221A\uD835\uDC65");
-    private JButton divide = new JButton("\uE94A");
+    private JButton backspace = new JButton("<-");
+    private JButton inverse = new JButton("1/x");
+    private JButton square = new JButton("x²");
+    private JButton squareRoot = new JButton("v²");
+    private JButton divide = new JButton("/");
     private JButton seven = new JButton("7");
     private JButton eight = new JButton("8");
     private JButton nine = new JButton("9");
-    private JButton multiply = new JButton("\uE947");
+    private JButton multiply = new JButton("x");
     private JButton four = new JButton("4");
     private JButton five = new JButton("5");
     private JButton six = new JButton("6");
-    private JButton substract = new JButton("\uE949");
+    private JButton substract = new JButton("-");
     private JButton one = new JButton("1");
     private JButton two = new JButton("2");
     private JButton three = new JButton("3");
-    private JButton add = new JButton("\uE948");
-    private JButton plusMinus = new JButton("\u207A\u2044\u208B");
+    private JButton add = new JButton("+");
+    private JButton plusMinus = new JButton("+/-");
     private JButton zero = new JButton("0");
     private JButton comma = new JButton(",");
-    private JButton answer = new JButton("\uE94E");
+    private JButton answer = new JButton("=");
 
     /* JTextArea *******************************************************************************************************
      */
