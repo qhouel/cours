@@ -184,15 +184,8 @@ CREATE TABLE IF NOT EXISTS LIGNECOMMANDE
 #       TABLE : H_FACTURATION Table d'historisation des modifications de la table FACTURATION
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS H_FACTURATION
-(
- IDFACTURE INTEGER NOT NULL  ,
- REFCOMM INTEGER NOT NULL ,
- DATE_HISTO DATE NOT NULL  ,
- DATEFACT DATE NULL  ,
- MONTANT DECIMAL(10,2) NULL 
- , PRIMARY KEY (IDFACTURE,DATE_HISTO) 
- ) ;
+create table contentieuxFact as select * from facture where 2=0;
+create table h_facture as select * from contentieuxFact where 2 = 0;
 
 # -----------------------------------------------------------------------------
 #       TABLE : H_CLIENT Table d'historisation des modifications de la table CLIENT
@@ -286,9 +279,9 @@ ADD FOREIGN KEY FK_LIGNECOMMANDE_PRODUIT (IDPRO)
 REFERENCES PRODUIT (IDPRO) ;
 
 
-ALTER TABLE H_FACTURATION 
-ADD FOREIGN KEY FK_H_FACTURATION_FACTURATION (IDFACTURE)
-REFERENCES FACTURATION (IDFACTURE) ;
+ALTER TABLE H_FACTURE 
+ADD FOREIGN KEY FK_H_FACTURE_FACTURE (IDFACTURE)
+REFERENCES FACTURE (IDFACTURE) ;
 
 
 ALTER TABLE H_CLIENT 
@@ -422,44 +415,6 @@ end if;
 end //
 DELIMITER ;
 
-# -----------------------------------------------------------------------------
-#      ALTER TABLE : CLIENT COMPTEUR NB FACTURE
-# -----------------------------------------------------------------------------
-
-
-
-/*
-drop trigger if exists UpdateNbFacture;
-DELIMITER //
-Create trigger UpdateActivites
-after update on Activite
-for each ROW
-Begin
-if new.nomStation != old.nomStation
-then
-update station
-	set nbActivites = nbActivites + 1
-	where nomStation = new.nomStation;
-update station 
-	set nbActivites = nbActivites - 1
-	where nomStation = old.nomStation;
-end if ;
-end //
-DELIMITER ;
-
-
-drop trigger if exists DeleteActivites;
-DELIMITER //
-Create trigger DeleteActivites
-after delete on Activite
-for each ROW
-Begin
-update station 
-	set nbActivites = nbActivites - 1
-	where nomStation = old.nomStation;
-end //
-DELIMITER ;
-*/
 
 # -----------------------------------------------------------------------------
 #      INSERT TABLE : Particulier
@@ -487,19 +442,24 @@ insert INTO PROFESSIONNEL values
 insert into PRODUIT values
 	(null, 'Moteur', 'BMW', 'moteur qui va vite', '350', '100', '100', '50', 'images/BMW.png'),
 	(null, 'Tournevis', 'tournevis bleu', 'tourne les vis bleues', '5', '0.100', '1', '600', 'images/tournevis.jpg'),
-	(null, 'Batterie', 'Bosh', 'la batterie de ta vie', '70', '15', '1', '150', 'images/batterie.jpg');
+	(null, 'Batterie', 'Bosh', 'la batterie de ta vie', '70', '15', '1', '150', 'images/batterie.jpg'),
+	(null, 'Pinces croco', 'Gys', 'le cable qui recharge ta vie', '157', '1', '1', '100', 'images/cable.jpg'),
+	(null, 'Disque frein', 'Bosh', 'les disques qui freinent vite', '42', '2', '1', '75', 'images/disques.jpg');
 
-/*
+
 	ALTER table Client
-add nbFacture integer default 0;
+add nbFactures integer default 0;
 
+	ALTER table H_CLIENT
+add nbFactures integer default 0;
 
 	ALTER table professionnel
-add nbFacture integer default 0;
-
+add nbFactures integer default 0;
 
 	ALTER table particulier
-add nbFacture integer default 0;
+add nbFactures integer default 0;
+
+
 # -----------------------------------------------------------------------------
 #      TRIGGER TABLE : CLIENT COMPTEUR NB FACTURE
 # -----------------------------------------------------------------------------
@@ -511,37 +471,126 @@ after insert on Commandes
 for each ROW
 Begin
 update Client 
-	set nbFacture = nbFacture +1 
-	where new.idcli = idcli ;
+	set nbFactures = nbFactures +1 
+	where idcli = new.idcli ;
+if new.idcli = (select idcli from particulier where idcli=new.idcli)
+then update particulier
+set nbFactures = nbFactures + 1 where idcli = new.idcli;
+elseif (select idcli from professionnel where idcli=new.idcli)
+then update professionnel
+set nbFactures = nbFactures + 1
+where idcli = new.idcli;
+end if ;
 end //
 DELIMITER ;
 
-Drop trigger if exists nbFacture_particulier;
-DELIMITER //
-Create trigger nbFacture_particulier
-after insert on Commandes
-for each ROW
-Begin
-update Particulier 
-	set nbFacture = nbFacture +1 
-	where new.idcli = idcli ;
-end //
-DELIMITER ;
-
-Drop trigger if exists nbFacture_professionnel;		
-DELIMITER //
-Create trigger nbFacture_professionnel
-after insert on Commandes
-for each ROW
-Begin
-update professionnel 
-	set nbFacture = nbFacture +1 
-	where new.idcli = idcli ;
-end //
-DELIMITER ;
 
 insert into commandes values
-	(null, 1, '2020-05-01', '2020-05-10', 'ACTIF'),
-	(null, 2, '2020-01-10', '2019-01-15', 'ACTIF');
+	(null, 3, '2020-05-01', '2020-05-10'),
+	(null, 4, '2020-01-10', '2019-01-15');
+/*
+update client set nbFactures = 0 where nbFactures >0;
+update particulier set nbFactures = 0 where nbFactures >0;
+*/
+-------------------------- GESTION STOCK --------------------
+--------------------------	TRIGGER ------------------------
 
-	*/
+Drop trigger if exists GestStock;
+delimiter //
+create trigger GestStock
+before insert on LIGNECOMMANDE
+for each ROW
+Begin
+if (select stock from produit where idpro = new.idpro) < new.qte
+then
+signal sqlstate '45000' set message_text = 'calma te Bro ya pas assez';
+else 
+update produit 
+	set stock = stock - new.qte where idpro = new.idpro;
+	end if ;
+end //
+delimiter ; 
+
+insert into LIGNECOMMANDE values
+	(1, 3, 10, 0);
+
+
+-----------------Procedure TTC/TVA/HT -------------------
+/*
+CREATE TABLE IF NOT EXISTS FACTURE
+(
+ IDFACTURE INTEGER NOT NULL AUTO_INCREMENT ,
+ REFCOMM INTEGER NOT NULL ,
+ DATEFACT DATE NULL  ,
+ MONTANT DECIMAL(10,2) NULL   
+ , PRIMARY KEY (IDFACTURE) 
+ ) ;
+
+
+Alter table facture modify HT decimal(10,2) default 0;
+Alter table Facture modify TVA decimal(10,2) default 0;
+Alter table Facture modify montant decimal(10,2) default 0;
+alter table facture drop refcomm;
+
+Drop trigger if exists CalculMontant;
+delimiter //
+create trigger CalculMontant
+after insert on LigneFact
+for each ROW
+Begin
+declare mht, mtva, mttc decimal(10,2);
+select sum(prix * qte), sum(prix * qte) * 0.2, sum(prix * qte)*1.20
+into mht, mtva, mttc from produit, LigneFact
+where produit.idpro = LigneFact.idpro
+and IDFACTURE = new.IDFACTURE;
+update Facture
+set ht = mht, tva = mtva, montant = mttc, 
+DATEFACT = curdate()
+where IDFACTURE = new.IDFACTURE;
+end //
+delimiter ;
+
+
+Create table LigneFact (
+IDFACTURE int not null,
+idpro int not null,
+qte int,
+primary key(IDFACTURE, idpro),
+foreign key (IDFACTURE) REFERENCES facture(IDFACTURE),
+foreign key (idpro) REFERENCES produit(idpro)
+);
+
+insert into LigneFact values
+	(1, 1, 10);
+
+
+insert into facture(IDFACTURE, DATEFACT) values
+	(2, curdate());
+*/
+
+
+
+
+alter table FACTURE add DATER date;
+
+
+drop trigger if exists GestionFact;
+delimiter //
+create trigger GestionFact
+Before delete on Facture
+for each row
+Begin
+if datediff(curdate(), old.DATEFACT) < 30 
+then signal sqlstate '45000' set message_text = 'Impossible de supprimer';
+elseif (old.DATER is not null)
+then insert into h_facture select * from facture where IDFACTURE = old.IDFACTURE;
+elseif datediff(curdate(), old.DATEFACT) > 30 
+then insert into contentieuxFact select * from facture where IDFACTURE = old.IDFACTURE;
+end if;
+end // 
+delimiter ;
+
+
+insert into facture(IDFACTURE, DATEFACT, DATER) values
+	(5, '2019-02-10', '2019-02-15');
+
