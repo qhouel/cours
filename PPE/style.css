@@ -42,7 +42,9 @@ body{
     color: #405980;
     border: 1px solid #405980;
 }
-
+.bg {
+    background-image: url('img/background.jpg');
+}
 /*.deco {
     background-color: #405980;
     color: #405980;

@@ -12,7 +12,7 @@
       <li class="nav-item active">
         <a class="nav-link" href="index.php?page=2">Professionnels <span class="sr-only">(current)</span></a>
       </li>
-     <li class="nav-item active">
+      <li class="nav-item active">
         <a class="nav-link" href="index.php?page=3">Produits <span class="sr-only">(current)</span></a>
       </li>
     </ul>

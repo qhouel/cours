@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS PRODUIT
 CREATE TABLE IF NOT EXISTS ENTREPOT
 (
  IDENTR INTEGER NOT NULL AUTO_INCREMENT ,
- ZONE_GEOGRAPHIQUE enum('Alsace', 'Aquitaine', 'Auvergne', 'Basse Normandie', 'Bourgogne', 'Bretagne', 'Centre', 'Champagne-Ardenne', 'Corse', 'Franche-Comté', 'Haute Normandie', 'Ile-de-France', 'Languedoc-Roussillon', 'Limousin', 'Lorraine', 'Midi-Pyrénées', 'Nord-Pas-de-Calais', 'Pays de la Loire', 'Picardie', 'Poitou-Charentes', 'Provence-Alpes-Côte-Azur', 'Rhône-Alpes', 'Régions outre-mer', 'Guadeloupe', 'Martinique', 'Guyane', 'La Réunion', 'Mayotte') ,
+ ZONE_GEOGRAPHIQUE enum('Alsace', 'Aquitaine', 'Auvergne', 'Basse Normandie', 'Bourgogne', 'Bretagne', 'Centre', 'Champagne-Ardenne', 'Corse', 'Franche-Comtee', 'Haute Normandie', 'Ile-de-France', 'Languedoc-Roussillon', 'Limousin', 'Lorraine', 'Midi-Pyreeneees', 'Nord-Pas-de-Calais', 'Pays de la Loire', 'Picardie', 'Poitou-Charentes', 'Provence-Alpes-Côte-Azur', 'Rhône-Alpes', 'Reegions outre-mer', 'Guadeloupe', 'Martinique', 'Guyane', 'La Reeunion', 'Mayotte') ,
  ADRESSE CHAR(32) NULL  ,
  CODE_POSTAL INTEGER NULL  
  , PRIMARY KEY (IDENTR) 
@@ -425,7 +425,7 @@ INSERT INTO particulier values
 (null, 'Quentin','Houel', '3 rue des arbres', 'Paris', '75000', 'hiboux@coucou.com', '0623548678', 'bonjour'),
 (null, 'Eviatar','Houri', '5 rue des igloos', 'Paris', '75000', 'bonjour@hiboux.com', '0602030405', 'bonjour'),
 (null, 'Donald','Trump', 'maison blanche', 'Paris', '75000', 'donald@whitehouse.com', '0902030405', 'bonjour'),
-(null, 'Emmanuel','Macron', 'elysée', 'Paris', '75000', 'manu@notreprojet.com', '0402030405', 'bonjour');
+(null, 'Emmanuel','Macron', 'elyseee', 'Paris', '75000', 'manu@notreprojet.com', '0402030405', 'bonjour');
 
 
 # -----------------------------------------------------------------------------
@@ -436,7 +436,7 @@ insert INTO PROFESSIONNEL values
   (Null, 'bonjour', '555664448', 'bondour', 'lotusrouge', 'palais du nem', 'Pekin', '31548', 'bondour@lotusrouge.com', '0102030405', 'bonjour'),
   (Null, 'toto', '987654321', 'tata', 'titi', 'bonjour.png', 'Paris', '75010', 'toto@bonjour.com', '0102030405', 'bonjour'),
   (Null, 'bonnet', '123456789', 'ponpon', 'pupu', '5 rue de la laine', 'Paris', '75011', 'ponpon@bonnet.com', '0102030405', 'bonjour'),
-  (Null, 'la bonne soupe', '987654321', 'la bonne', 'soupe', '2 rue des légumes', 'Paris', '75009', 'soupe@legumes.com', '0102030405', 'bonjour'),
+  (Null, 'la bonne soupe', '987654321', 'la bonne', 'soupe', '2 rue des leegumes', 'Paris', '75009', 'soupe@legumes.com', '0102030405', 'bonjour'),
   (Null, 'fleur de sel', '987654321', 'romain', 'klexos', 'marais salant', 'Paris', '75013', 'sel@baleine.com', '0102030405', 'bonjour');
 
 insert into PRODUIT values
@@ -515,8 +515,8 @@ insert into LIGNECOMMANDE values
 	(1, 3, 10, 0);
 
 
------------------Procedure TTC/TVA/HT -------------------
 /*
+-----------------Procedure TTC/TVA/HT -------------------
 CREATE TABLE IF NOT EXISTS FACTURE
 (
  IDFACTURE INTEGER NOT NULL AUTO_INCREMENT ,
@@ -591,6 +591,6 @@ end //
 delimiter ;
 
 
-insert into facture(IDFACTURE, DATEFACT, DATER) values
-	(5, '2019-02-10', '2019-02-15');
+insert into facture(REFCOMM, IDFACTURE, DATEFACT, DATER) values
+	(null, 5, '2019-02-10', '2019-02-15');
 
